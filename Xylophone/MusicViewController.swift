@@ -12,7 +12,7 @@ import AVFoundation
 
 class MusicViewController: UIViewController {
   //  MARK: - Public Properties
-  var player: AVAudioPlayer?
+  var player: AVAudioPlayer!
   
   //  MARK: - Private Properties
   private lazy var stackView: UIStackView = {
@@ -138,7 +138,13 @@ class MusicViewController: UIViewController {
   
   @objc private func buttonPressed(sender: UIButton) {
     //playSound(sound: sender.titleLabel?.text ?? "")
-    playSound(sound: sender.currentTitle ?? "")
+    playSound(soundName: sender.currentTitle ?? "")
+    
+    sender.alpha = 0.5
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+      sender.alpha = 1
+    }
   }
 }
 
@@ -205,10 +211,10 @@ extension MusicViewController {
     }
   }
   
-  func playSound(sound: String) {
-    let url = Bundle.main.url(forResource: sound, withExtension: "wav")
-    player = try! AVAudioPlayer(contentsOf: url!)
-    player?.play()
+  func playSound(soundName: String) {
+    guard let url = Bundle.main.url(forResource: soundName, withExtension: "wav") else { return }
+    player = try! AVAudioPlayer(contentsOf: url)
+    player.play()
   }
 }
 
